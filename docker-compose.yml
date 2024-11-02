@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  money4band-service:
+    build:
+      context: .  # Use the current directory for the build context
+      dockerfile: workflow-linux-arm64.dockerfile  # Specify your Dockerfile
+    working_dir: /app  # Set working directory
+    volumes:
+      - ./output:/app/dist  # Mount the output directory to access built files on the host
+    environment:
+      - DEBIAN_FRONTEND=noninteractive  # Set environment variables if needed
+    command: >
+      pyinstaller --onedir --name Money4Band main.py 
+      --hidden-import colorama --hidden-import docker --hidden-import requests 
+      --hidden-import pyyaml --hidden-import psutil --hidden-import yaml 
+      --hidden-import secrets --add-data .resources:.resources 
+      --add-data config:config --add-data utils:utils 
+      --add-data legacy_money4bandv3x:legacy_money4bandv3x 
+      --add-data template:template --add-data LICENSE:LICENSE 
+      --add-data README.md:README.md --contents-directory . -y
+
